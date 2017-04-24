@@ -1,0 +1,31 @@
+{
+  "name": "mynpm-cli",
+  "version": "1.0.2",
+  "description": "a demo for development of command line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/outsiderLazy/mynpm-cli"
+  },
+  "bin": {
+    "mynpm": "./index.js"
+  },
+  "keywords": [
+    "console",
+    "CLI",
+    "mynpm"
+  ],
+  "author": "outsider",
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.9.0",
+    "fs-extra": "^2.1.2",
+    "json-format": "^1.0.1",
+    "shelljs": "^0.7.7"
+  }
+}
