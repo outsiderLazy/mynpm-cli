@@ -41,9 +41,11 @@ function init(pOptions) {
         var isPromptMode = pOptions.yes ? false : true;
         //默认名称为当前文件夹名称的小写
         var _defaultName = path.basename(process.cwd()).toLowerCase();
+        //默认入口文件为index.js
         var _defaultEntryPoint = 'index.js'
-            // var jsArr = shell.ls('*.js');没有js文件时，有额外输出
+        // var jsArr = shell.ls('*.js');没有js文件时，有额外输出
         var jsArr = shell.ls();
+        //当前工作目录下，如果存在js文件，将找到的第一个js文件作为默认值
         for (var i = 0; i < jsArr.length; i++) {
             if (path.extname(jsArr[i]) === '.js') {
                 _defaultEntryPoint = jsArr[i];
@@ -52,6 +54,7 @@ function init(pOptions) {
         };
 
         var _testCommand = 'echo \"Error: no test specified\" && exit 1';
+        //拼接将生成的package.json文件的绝对路径
         var mypackagePath = path.resolve(process.cwd(), 'package.json');
 
         var _inputName = '',
@@ -78,7 +81,7 @@ function init(pOptions) {
             _license = yield prompt('license: (ISC) ');
         }
 
-
+        //处理将生成的package.json信息
         mypackage.name = _inputName || _defaultName;
         mypackage.version = _inputVersion || '1.0.0';
         mypackage.description = _inputDesc || '';
@@ -107,28 +110,29 @@ function init(pOptions) {
             console.log('Wrote to ' + mypackagePath + '\n');
             console.log(jsonFormat(mypackage) + '\n');
         }
-
+        
+        //将信息写入package.json文件
         fs.outputJsonSync(mypackagePath, mypackage);
+        /*确保入口文件存在——优化npm init方法，懒得每次都创建入口文件（index.js）*/
         fs.ensureFileSync(mypackage.main);
-        //确保入口文件存在
         process.exit();
     });
 }
 
 /**
  * 处理install命令      
- * @param  {Array} pOptions  - 安装的模块名称
- * @param  {Object} pOptional - install命令后面带的参数
+ * @param  {Array} pOptional  - 安装的模块名称
+ * @param  {Object} pOptions - install命令后面带的参数
  */
-function install(pOptions, pOptional) {
+function install(pOptional, pOptions) {
     var _command = ['npm', 'install'];
-    _command = _command.concat(pOptions);
-    if (pOptional.global)
+    _command = _command.concat(pOptional);
+    if (pOptions.global)
         _command.push('-g')
-    else if (pOptional.save) {
+    else if (pOptions.save) {
         ensurePackageJsonExist();
         _command.push('--save')
-    } else if (pOptional.saveDev) {
+    } else if (pOptions.saveDev) {
         ensurePackageJsonExist();
         _command.push('--save-dev')
     }
